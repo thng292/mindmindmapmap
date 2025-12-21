@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>mindmindmapmap</title>
+        <link href="index.css" rel="stylesheet">
+    </head>
+    <body>
+        <nav>
+            <input id="save_name" />
+            <button onclick="save()">Save</button>
+            <select id="load_name">
+            </select>
+            <button onclick="load()">Load</button>
+            <button onclick="showTutor()">Show tutorial</button>
+        </nav>
+        <div id="tutorial-modal" class="tutorial">
+            <div class="setting-container">
+                <div class="setting-left">
+                    <p>tab</p>
+                    <p>shift + tab</p>
+                    <p><strong>[Edit mode]</strong></p>
+                    <p>space/i/a</p>
+                    <p><strong>[Navigate mode]</strong></p>
+                    <p>jj</p>
+                    <p>h/j/k/l</p>
+                    <p>o/O</p>
+                    <p>delete/x/backspace</p>
+                </div>
+                <div class="setting-right">
+                    <p>Create child node</p>
+                    <p>Create parent node</p>
+                    <p><strong>[Edit mode]</strong></p>
+                    <p>Switch to navigate mode</p>
+                    <p><strong>[Navigate mode]</strong></p>
+                    <p>Switch to edit mode</p>
+                    <p>Move left/down/up/right on the map</p>
+                    <p>Create sibling after/before and switch to edit mode</p>
+                    <p>Delete node, give it's child to it's parent</p>
+                </div>
+            </div>
+            <button onclick="hideTutor()">Hide</button>
+        </div>
+        <section id="main" tabindex="0"></section>
+        <script>
+            const tutor_modal = document.getElementById("tutorial-modal")
+            tutor_modal.onclick = e => e.stopPropagation()
+
+            function showTutor() {
+                tutor_modal.style.display = "block"
+            }
+
+            function hideTutor() {
+                tutor_modal.style.display = "none"
+            }
+
+        </script>
+        <script src="index.js"></script>
+    </body>
+</html>

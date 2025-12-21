@@ -1,0 +1,90 @@
+:root {
+    --bg-color: white;
+    --text-color: black;
+    --surface-color: #eee;
+    --nav-height: 64px;
+    --fill-color: #ddd;
+    --fill-root-color: #668BFA;
+    --stroke-color: black;
+    --stroke-selected-color: red;
+}
+
+* {
+    box-sizing: border-box;
+    padding: opx;
+    margin: 0;
+}
+
+nav {
+    height: var(--nav-height);
+    padding: 4px;
+}
+
+input, button, select {
+    padding: 4px;
+}
+
+#main {
+    width: 100dvw;
+    height: calc(100dvh - var(--nav-height));
+    overflow: auto;
+    position: relative;
+}
+
+svg {
+    display: block;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.node-text-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+.node-text {
+    box-sizing: border-box;
+    color: var(--text-color);
+    text-align: center;
+    overflow: hidden;
+}
+
+.tutorial {
+    display: none;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 20%;
+    background-color: rgba(0,0,0,.2);
+}
+
+.setting-container {
+    display: flex;
+    background-color: var(--bg-color);
+    border-color: var(--stroke-color);
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 10px;
+    flex-direction: row;
+    font-family: "monospace";
+    padding: 16px;
+}
+
+.setting-left {
+    padding-right: 64px;
+}
+
+.setting-right {
+    flex-grow: 1;
+}
