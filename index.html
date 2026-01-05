@@ -6,10 +6,13 @@
     </head>
     <body>
         <nav>
-            <input id="save_name" />
-            <button onclick="save()">Save</button>
-            <select id="load_name">
+            <p>Project</p>
+            <input id="proj_name" list="proj_names" />
+            <datalist id="proj_names"></datalist>
+            <p>Save</p>
+            <select id="save_name">
             </select>
+            <button onclick="save()">Save</button>
             <button onclick="load()">Load</button>
             <button onclick="showTutor()">Show tutorial</button>
         </nav>
@@ -21,7 +24,7 @@
                     <p><strong>[Edit mode]</strong></p>
                     <p>space/i/a</p>
                     <p><strong>[Navigate mode]</strong></p>
-                    <p>jj</p>
+                    <p>escape</p>
                     <p>h/j/k/l</p>
                     <p>o/O</p>
                     <p>delete/x/backspace</p>
@@ -41,9 +44,16 @@
             <button onclick="hideTutor()">Hide</button>
         </div>
         <section id="main" tabindex="0"></section>
+        <div id="command-container">
+            <p id="command-mode"></p>
+        </div>
+        <div id="node-text-arena" contenteditable="plaintext-only" tabindex="-1"></div>
         <script>
             const tutor_modal = document.getElementById("tutorial-modal")
+            const node_text_arena = document.getElementById("node-text-arena")
+            
             tutor_modal.onclick = e => e.stopPropagation()
+            node_text_arena.onkeydown = e => e.stopPropagation()
 
             function showTutor() {
                 tutor_modal.style.display = "block"

@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "allowJs": false,
+        "target": "es2024",
+        "erasableSyntaxOnly": true,
+        "sourceMap": true
+    },
+    "watchOptions": {},
+    "files": [
+        "index.ts"
+    ]
+}

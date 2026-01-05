@@ -3,6 +3,7 @@
     --text-color: black;
     --surface-color: #eee;
     --nav-height: 64px;
+    --command-padding: 16px;
     --fill-color: #ddd;
     --fill-root-color: #668BFA;
     --stroke-color: black;
@@ -11,11 +12,15 @@
 
 * {
     box-sizing: border-box;
-    padding: opx;
+    padding: 0px;
     margin: 0;
 }
 
 nav {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
     height: var(--nav-height);
     padding: 4px;
 }
@@ -29,32 +34,40 @@ input, button, select {
     height: calc(100dvh - var(--nav-height));
     overflow: auto;
     position: relative;
+    display: grid;
+    place-items: center;
+}
+
+#command-container {
+    position: fixed;
+    left: var(--command-padding);
+    bottom: var(--command-padding);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#command-mode {
+    font-weight: bold;
+    text-transform: uppercase;
+    padding-right: var(--command-padding)
+}
+
+#node-text-arena {
+    display: none;
+    position: fixed;
+    background-color: var(--fill-color);
+    max-width: 100%;
 }
 
 svg {
     display: block;
-    position: absolute;
+    /* position: absolute;
     left: 0px;
     top: 0px;
     width: 100%;
-    height: 100%;
+    height: 100%; */
     overflow: visible;
-}
-
-.node-text-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-}
-
-.node-text {
-    box-sizing: border-box;
-    color: var(--text-color);
-    text-align: center;
-    overflow: hidden;
 }
 
 .tutorial {

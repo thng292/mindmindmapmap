@@ -1,0 +1,14 @@
+{
+  "name": "mindmindmapmap",
+  "version": "1.0.0",
+  "description": "mind map shjit",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^5.9.3"
+  }
+}
