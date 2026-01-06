@@ -17,6 +17,7 @@ const NAVBAR_HEIGHT = 64;
 const CORNER_RADIUS = 10;
 const STROKE_WIDTH = 2;
 const PADDING = 12;
+const LINE_HEIGHT = 1.2;
 const NODE_ID_ATTR = "data-node-id";
 
 function assert(expr: unknown): void {
@@ -147,19 +148,24 @@ function nodeCalcSize(node: NNode): Dim {
     }
     node.changed = false;
     const lines = node.co.split("\n");
-    console.log(JSON.stringify(node.co), "=>", lines)
-    const { line_width, line_height } = lines.reduce(
+    let { line_width, line_height } = lines.reduce(
         (a, c) => {
-            const lineDim = getTextSize((!!c) ? c : "I", getCanvasFont());
-            console.log(lineDim)
+            const lineDim = getTextSize(c, getCanvasFont());
+            // console.log(lineDim)
             a.line_width = Math.max(lineDim.w, a.line_width);
-            a.line_height += lineDim.h;
+            if (a.line_height == 0) {
+                // Only record the first line's height
+                a.line_height = lineDim.h;
+            }
             return a;
         },
         { line_width: 0, line_height: 0 }
     );
+    if (lines.length > 1) {
+        line_height += lines.length * LINE_HEIGHT * parseFloat(getComputedStyle(document.body).fontSize);
+    }
     node.text_dim = { w: line_width, h: line_height };
-    // const lineDim = getTextSize(node.co, getCanvasFont())
+
     // node.text_dim = lineDim
 
     return node.text_dim;
@@ -501,10 +507,10 @@ function renderNode_(
         if (!lines[i]) {
             acc_empty_line += 1
         } else {
-            if (i == 0) {
-                acc_empty_line = -1
+            if (i > 0) {
+                acc_empty_line += 1
             }
-            tmp += `<tspan x="${node_x + PADDING}" dy="${acc_empty_line + 1}em">${lines[i]}</tspan>`
+            tmp += `<tspan x="${node_x + PADDING}" dy="${acc_empty_line * LINE_HEIGHT}em">${lines[i]}</tspan>`
             acc_empty_line = 0
         }
 
@@ -683,18 +689,18 @@ function changeSaves() {
 
     app_state.saves =
         JSON.parse(
-            localStorage.getItem(getSaveKey(SAVES_STORAGE_KEY, proj_name)) ?? ""
+            localStorage.getItem(getSaveKey(SAVES_STORAGE_KEY, proj_name)) ?? "[]"
         ) ?? [];
     UIUpdateSavesOption();
 }
 
 function setupUI() {
     app_state.projects =
-        JSON.parse(localStorage.getItem(SAVES_STORAGE_KEY) ?? "") ?? [];
+        JSON.parse(localStorage.getItem(SAVES_STORAGE_KEY) ?? "[]") ?? [];
     const default_project = app_state.projects[0] ?? "Default project";
     app_state.saves =
         JSON.parse(
-            localStorage.getItem(getSaveKey(SAVES_STORAGE_KEY, default_project)) ?? ""
+            localStorage.getItem(getSaveKey(SAVES_STORAGE_KEY, default_project)) ?? "[]"
         ) ?? [];
 
     const proj_name = document.getElementById("proj_name")! as HTMLInputElement;
