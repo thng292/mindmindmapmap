@@ -233,7 +233,7 @@ function handleControl(e: KeyboardEvent) {
             selection.removeAllRanges()
             selection.addRange(range)
 
-            tmp.onblur = () => {
+            tmp.onblur = (e) => {
                 app_state.mode = 'navigate'
                 current_node.co = tmp.innerText.trim()
                 current_node.changed = true
@@ -350,6 +350,19 @@ function main() {
     svg.id = "main-svg"
     svg.setAttribute("transform", "translate(-0.5 -0.5)");
     document.getElementById("main")!.appendChild(svg);
+
+    document.getElementById("node-text-arena").addEventListener("keydown", e => {
+        console.log("shti")
+        e.stopPropagation()
+        switch (e.key) {
+            case "Escape":
+            case "Tab":
+                e.preventDefault()
+                e.stopPropagation()
+                e.currentTarget.blur()
+                break
+        }
+    })
 
     app_state.root_node = nodeCreateDefault(null);
     app_state.root_node.co = "Root node";
