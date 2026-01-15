@@ -6,6 +6,11 @@ const defaults = {
         height: 32,
         spacing: { h: 10, w: 30 },
     },
+    fill_color: "#dddddd",
+    fill_root_color: "#668BFA",
+    stroke_color: "#000000",
+    stroke_selected_color: "#FF0000",
+
 };
 
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -189,7 +194,7 @@ function render() {
     svg.setAttribute("viewBox", viewBoxString());
     svg.setAttribute(
         "style",
-        `width: ${app_state.view_box.width}px; height: ${app_state.view_box.height}px;`
+        `width: ${app_state.view_box.width}px; height: ${app_state.view_box.height}px; font: ${getCanvasFont()}`
     );
 
     const root_node_pos: Pos = { x: defaults.node.spacing.w + root_node.text_dim.w / 2, y: root_node.branch_dim.h / 2 }
@@ -352,13 +357,13 @@ function main() {
     document.getElementById("main")!.appendChild(svg);
 
     document.getElementById("node-text-arena").addEventListener("keydown", e => {
-        console.log("shti")
         e.stopPropagation()
         switch (e.key) {
             case "Escape":
             case "Tab":
                 e.preventDefault()
                 e.stopPropagation()
+                // @ts-expect-error
                 e.currentTarget.blur()
                 break
         }
@@ -461,11 +466,11 @@ function renderNode_(
     const node_x = pos.x - node_width / 2;
     const node_y = pos.y - node_height / 2;
 
-    const fill_color = nodeIsRoot(node) ? "fill-root-color" : "fill-color";
+    const fill_color = nodeIsRoot(node) ? defaults.fill_root_color : defaults.fill_color;
     const stroke_color =
         node.id == app_state.selected_node_id
-            ? "stroke-selected-color"
-            : "stroke-color";
+            ? defaults.stroke_selected_color
+            : defaults.stroke_color;
 
     let text_svg = undefined as unknown as SVGElement;
     let node_svg = undefined as unknown as SVGElement;
@@ -506,8 +511,8 @@ function renderNode_(
     setAppearance(
         node_svg,
         CORNER_RADIUS,
-        cssVar(stroke_color),
-        cssVar(fill_color)
+        stroke_color,
+        fill_color,
     );
     setPos(node_svg, node_x, node_y, node_width, node_height);
     const lines = node.co.split("\n")
@@ -723,6 +728,18 @@ function setupUI() {
 
     UIUpdateSavesOption();
     UIUpdateProjectsOption();
+}
+
+function exportSVG() {
+    const elem = document.getElementById("main-svg")
+    const svgData = new XMLSerializer().serializeToString(elem)
+    const blob = new Blob([svgData], { type: "image/svg+xml" })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = "mindmap_" + new Date().toLocaleString()
+    link.click()
+    URL.revokeObjectURL(url)
 }
 
 main();

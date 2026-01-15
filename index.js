@@ -6,6 +6,10 @@ const defaults = {
         height: 32,
         spacing: { h: 10, w: 30 },
     },
+    fill_color: "#dddddd",
+    fill_root_color: "#668BFA",
+    stroke_color: "#000000",
+    stroke_selected_color: "#FF0000",
 };
 const SVG_NS = "http://www.w3.org/2000/svg";
 const HTML_NS = "http://www.w3.org/1999/xhtml";
@@ -139,7 +143,7 @@ function render() {
     app_state.view_box.height = root_node.branch_dim.h + defaults.node.spacing.h;
     // svg.setAttributeNS("http://www.w3.org/XML/1998/namespace", "xml:space", "preserve");
     svg.setAttribute("viewBox", viewBoxString());
-    svg.setAttribute("style", `width: ${app_state.view_box.width}px; height: ${app_state.view_box.height}px;`);
+    svg.setAttribute("style", `width: ${app_state.view_box.width}px; height: ${app_state.view_box.height}px; font: ${getCanvasFont()}`);
     const root_node_pos = { x: defaults.node.spacing.w + root_node.text_dim.w / 2, y: root_node.branch_dim.h / 2 };
     svg.replaceChildren();
     renderNode(svg, app_state.root_node, root_node_pos, root_node_pos);
@@ -294,13 +298,13 @@ function main() {
     svg.setAttribute("transform", "translate(-0.5 -0.5)");
     document.getElementById("main").appendChild(svg);
     document.getElementById("node-text-arena").addEventListener("keydown", e => {
-        console.log("shti");
         e.stopPropagation();
         switch (e.key) {
             case "Escape":
             case "Tab":
                 e.preventDefault();
                 e.stopPropagation();
+                // @ts-expect-error
                 e.currentTarget.blur();
                 break;
         }
@@ -373,10 +377,10 @@ function renderNode_(node, pos = { x: 0, y: 0 }, parent_pos = { x: 0, y: 0 }) {
     const node_height = line.h + 2 * PADDING;
     const node_x = pos.x - node_width / 2;
     const node_y = pos.y - node_height / 2;
-    const fill_color = nodeIsRoot(node) ? "fill-root-color" : "fill-color";
+    const fill_color = nodeIsRoot(node) ? defaults.fill_root_color : defaults.fill_color;
     const stroke_color = node.id == app_state.selected_node_id
-        ? "stroke-selected-color"
-        : "stroke-color";
+        ? defaults.stroke_selected_color
+        : defaults.stroke_color;
     let text_svg = undefined;
     let node_svg = undefined;
     let group_svg = undefined;
@@ -405,7 +409,7 @@ function renderNode_(node, pos = { x: 0, y: 0 }, parent_pos = { x: 0, y: 0 }) {
     if (line_svg) {
         line_svg.setAttribute("d", `M${parent_pos.x} ${parent_pos.y} L${node_x} ${pos.y}`);
     }
-    setAppearance(node_svg, CORNER_RADIUS, cssVar(stroke_color), cssVar(fill_color));
+    setAppearance(node_svg, CORNER_RADIUS, stroke_color, fill_color);
     setPos(node_svg, node_x, node_y, node_width, node_height);
     const lines = node.co.split("\n");
     console.log(JSON.stringify(node.co), "=>", lines);
@@ -577,6 +581,17 @@ function setupUI() {
     changeSaves();
     UIUpdateSavesOption();
     UIUpdateProjectsOption();
+}
+function exportSVG() {
+    const elem = document.getElementById("main-svg");
+    const svgData = new XMLSerializer().serializeToString(elem);
+    const blob = new Blob([svgData], { type: "image/svg+xml" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "mindmap_" + new Date().toLocaleString();
+    link.click();
+    URL.revokeObjectURL(url);
 }
 main();
 //# sourceMappingURL=index.js.map
