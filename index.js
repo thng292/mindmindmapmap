@@ -283,6 +283,9 @@ function handleControl(e) {
             x: removeCurrentNode,
             Backspace: removeCurrentNode,
             Delete: removeCurrentNode,
+            s: (_, e) => { if (e.ctrlKey) {
+                save();
+            } }
         };
     }
     const current_node = app_state.all_nodes[app_state.selected_node_id];
