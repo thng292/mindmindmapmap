@@ -157,7 +157,6 @@ function nodeCalcSize(node: NNode): Dim {
     let { line_width, line_height } = lines.reduce(
         (a, c) => {
             const lineDim = getTextSize(c, getCanvasFont());
-            // console.log(lineDim)
             a.line_width = Math.max(lineDim.w, a.line_width);
             if (a.line_height == 0) {
                 // Only record the first line's height
@@ -211,7 +210,6 @@ let handleControlHandlers: {
     [k: string]: (current_node: NNode, e: KeyboardEvent) => void;
 } = undefined;
 function handleControl(e: KeyboardEvent) {
-    console.log(e);
     if (!handleControlHandlers) {
         function removeCurrentNode(current_node: NNode) {
             if (!nodeIsRoot(current_node)) {
@@ -460,6 +458,13 @@ function cssVar(s: string): string {
     return `var(--${s})`;
 }
 
+function focusNode(e: Event) {
+    const target = e.currentTarget as HTMLElement;
+    app_state.selected_node_id = Number(target.getAttribute(NODE_ID_ATTR));
+    target.scrollIntoView({"behavior": "smooth"})
+    render()
+}
+
 let renderNode_font = getCanvasFont();
 function renderNode_(
     node: NNode,
@@ -494,7 +499,8 @@ function renderNode_(
         group_svg = document.createElementNS(SVG_NS, "g");
         line_svg = document.createElementNS(SVG_NS, "path");
 
-        text_svg.setAttribute(NODE_ID_ATTR, node.id.toString());
+        group_svg.setAttribute(NODE_ID_ATTR, node.id.toString());
+        group_svg.onclick = focusNode
 
         line_svg.setAttribute("fill", "none");
         line_svg.setAttribute("stroke", "#000000");
@@ -522,7 +528,6 @@ function renderNode_(
     );
     setPos(node_svg, node_x, node_y, node_width, node_height);
     const lines = node.co.split("\n")
-    console.log(JSON.stringify(node.co), "=>", lines)
     const text_x = node_x + PADDING;
     const text_y = node_y + node_height - PADDING - (lines.length - 1) * line.h / lines.length;
     let tmp = ""
@@ -778,7 +783,6 @@ function importJSONFromFile(e: Event) {
     // here we tell the reader what to do when it's done reading...
     reader.onload = readerEvent => {
         const content = readerEvent.target.result; // this is the content!
-        console.log(content)
 
         const loaded_root = fromJson(content.toString())
     
