@@ -201,6 +201,10 @@ function render() {
     const root_node_pos: Pos = { x: defaults.node.spacing.w + root_node.text_dim.w / 2, y: root_node.branch_dim.h / 2 }
     svg.replaceChildren()
     renderNode(svg, app_state.root_node, root_node_pos, root_node_pos);
+
+    const import_json_input = document.getElementById("import-json-input");
+    import_json_input.onchange = importJSONFromFile
+
 }
 
 let handleControlHandlers: {
@@ -753,6 +757,39 @@ function exportJSON() {
     const blob = new Blob([json_data], { type: "application/json" })
 
     downloadData("mindmap_" + new Date().toLocaleString(), blob)
+}
+
+function importJSON() {
+    if (confirm("Do you want to save the current mindmap?")) {
+        save()
+    }
+
+    document.getElementById("import-json-input").click();    
+}
+
+function importJSONFromFile(e: Event) {
+    const input = e.target as HTMLInputElement
+    const file = input.files[0]
+
+    // setting up the reader
+    var reader = new FileReader();
+    reader.readAsText(file);
+
+    // here we tell the reader what to do when it's done reading...
+    reader.onload = readerEvent => {
+        const content = readerEvent.target.result; // this is the content!
+        console.log(content)
+
+        const loaded_root = fromJson(content.toString())
+    
+        if (loaded_root) {
+            document.getElementsByTagName("svg")[0].replaceChildren()
+            app_state.root_node = loaded_root;
+            app_state.selected_node_id = app_state.root_node.id;
+            render();
+        }
+    }
+
 }
 
 main();

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>mindmindmapmap</title>
         <link href="index.css" rel="stylesheet">
     </head>
@@ -16,6 +18,7 @@
             <button onclick="load()">Load</button>
             <button onclick="showTutor()">Show tutorial</button>
             <button onclick="exportSVG()">Export SVG</button>
+            <button onclick="importJSON()">Import JSON</button>
             <button onclick="exportJSON()">Export JSON</button>
         </nav>
         <div id="tutorial-modal" class="tutorial">
@@ -50,6 +53,7 @@
             <p id="command-mode"></p>
         </div>
         <div id="node-text-arena" contenteditable="plaintext-only" tabindex="-1"></div>
+        <input id="import-json-input" type="file" accept="application/json" name="Import JSON"/>
         <script>
             const tutor_modal = document.getElementById("tutorial-modal")
             

@@ -25,8 +25,7 @@ nav {
     padding: 4px;
 }
 
-input, button, select {
-    padding: 4px;
+input, button, select { padding: 4px;
 }
 
 #main {
@@ -58,6 +57,10 @@ input, button, select {
     position: fixed;
     background-color: var(--fill-color);
     max-width: 100%;
+}
+
+#import-json-input {
+    display: none;
 }
 
 svg {
