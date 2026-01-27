@@ -461,7 +461,7 @@ function cssVar(s: string): string {
 function focusNode(e: Event) {
     const target = e.currentTarget as HTMLElement;
     app_state.selected_node_id = Number(target.getAttribute(NODE_ID_ATTR));
-    target.scrollIntoView({"behavior": "smooth"})
+    // target.scrollIntoView({"behavior": "smooth"}) // Result in weird behavior
     render()
 }
 
@@ -500,7 +500,7 @@ function renderNode_(
         line_svg = document.createElementNS(SVG_NS, "path");
 
         group_svg.setAttribute(NODE_ID_ATTR, node.id.toString());
-        group_svg.onclick = focusNode
+        group_svg.ondblclick = focusNode
 
         line_svg.setAttribute("fill", "none");
         line_svg.setAttribute("stroke", "#000000");

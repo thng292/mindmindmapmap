@@ -377,7 +377,7 @@ function cssVar(s) {
 function focusNode(e) {
     const target = e.currentTarget;
     app_state.selected_node_id = Number(target.getAttribute(NODE_ID_ATTR));
-    target.scrollIntoView({ "behavior": "smooth" });
+    // target.scrollIntoView({"behavior": "smooth"}) // Result in weird behavior
     render();
 }
 let renderNode_font = getCanvasFont();
@@ -407,7 +407,7 @@ function renderNode_(node, pos = { x: 0, y: 0 }, parent_pos = { x: 0, y: 0 }) {
         group_svg = document.createElementNS(SVG_NS, "g");
         line_svg = document.createElementNS(SVG_NS, "path");
         group_svg.setAttribute(NODE_ID_ATTR, node.id.toString());
-        group_svg.onclick = focusNode;
+        group_svg.ondblclick = focusNode;
         line_svg.setAttribute("fill", "none");
         line_svg.setAttribute("stroke", "#000000");
         line_svg.setAttribute("stroke-width", STROKE_WIDTH.toString());
