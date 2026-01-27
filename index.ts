@@ -206,6 +206,41 @@ function render() {
 
 }
 
+
+function toEditMode(current_node: NNode) {
+    app_state.mode = 'edit'
+    render()
+    // setTimeout(() => current_node.elem.scrollIntoView({ "behavior": "smooth" }), 0)
+    const box = current_node.elem.getBoundingClientRect()
+    const tmp = document.getElementById("node-text-arena")
+    tmp.style.display = "block"
+    tmp.style.top = `${box.top}px`
+    tmp.style.left = `${box.left}px`
+    tmp.style.minWidth = `${box.width}px`
+    tmp.style.minHeight = `${box.height}px`
+
+    tmp.innerText = current_node.co
+    document.body.appendChild(tmp)
+    tmp.focus()
+
+    // Select all content
+    const selection = window.getSelection()
+    const range = document.createRange()
+    range.selectNodeContents(tmp)
+    selection.removeAllRanges()
+    selection.addRange(range)
+
+    tmp.onblur = (e) => {
+        app_state.mode = 'navigate'
+        current_node.co = tmp.innerText.trim()
+        current_node.changed = true
+        render()
+        tmp.style.display = "none"
+        // setTimeout(() => current_node.elem.scrollIntoView({ "behavior": "smooth" }), 0)
+        tmp.onblur = null
+    }
+}
+
 let handleControlHandlers: {
     [k: string]: (current_node: NNode, e: KeyboardEvent) => void;
 } = undefined;
@@ -215,40 +250,6 @@ function handleControl(e: KeyboardEvent) {
             if (!nodeIsRoot(current_node)) {
                 app_state.selected_node_id = current_node.pr!.id;
                 nodeRemove(current_node);
-            }
-        }
-
-        function toEditMode(current_node: NNode) {
-            app_state.mode = 'edit'
-            render()
-            // setTimeout(() => current_node.elem.scrollIntoView({ "behavior": "smooth" }), 0)
-            const box = current_node.elem.getBoundingClientRect()
-            const tmp = document.getElementById("node-text-arena")
-            tmp.style.display = "block"
-            tmp.style.top = `${box.top}px`
-            tmp.style.left = `${box.left}px`
-            tmp.style.minWidth = `${box.width}px`
-            tmp.style.minHeight = `${box.height}px`
-
-            tmp.innerText = current_node.co
-            document.body.appendChild(tmp)
-            tmp.focus()
-
-            // Select all content
-            const selection = window.getSelection()
-            const range = document.createRange()
-            range.selectNodeContents(tmp)
-            selection.removeAllRanges()
-            selection.addRange(range)
-
-            tmp.onblur = (e) => {
-                app_state.mode = 'navigate'
-                current_node.co = tmp.innerText.trim()
-                current_node.changed = true
-                render()
-                tmp.style.display = "none"
-                // setTimeout(() => current_node.elem.scrollIntoView({ "behavior": "smooth" }), 0)
-                tmp.onblur = null
             }
         }
 
@@ -458,9 +459,8 @@ function cssVar(s: string): string {
     return `var(--${s})`;
 }
 
-function focusNode(e: Event) {
-    const target = e.currentTarget as HTMLElement;
-    app_state.selected_node_id = Number(target.getAttribute(NODE_ID_ATTR));
+function focusNode(e: HTMLElement) {
+    app_state.selected_node_id = Number(e.getAttribute(NODE_ID_ATTR));
     // target.scrollIntoView({"behavior": "smooth"}) // Result in weird behavior
     render()
 }
@@ -500,7 +500,27 @@ function renderNode_(
         line_svg = document.createElementNS(SVG_NS, "path");
 
         group_svg.setAttribute(NODE_ID_ATTR, node.id.toString());
-        group_svg.ondblclick = focusNode
+
+        let pending_click: number = undefined;
+        group_svg.onclick = e => {
+            if (pending_click) {
+                clearTimeout(pending_click);
+                pending_click = undefined;
+            }
+
+            switch (e.detail) {
+                case 1:
+                    let current_target = e.currentTarget
+                    pending_click = setTimeout(() => focusNode(current_target as HTMLElement), 0);
+                    break;
+                case 2:
+                    focusNode(e.currentTarget as HTMLElement);
+                    toEditMode(app_state.all_nodes[app_state.selected_node_id]);
+                    break;
+                default:
+                    break;
+            }
+        };
 
         line_svg.setAttribute("fill", "none");
         line_svg.setAttribute("stroke", "#000000");

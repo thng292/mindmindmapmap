@@ -104,3 +104,7 @@ svg {
 .setting-right {
     flex-grow: 1;
 }
+
+text {
+    user-select: none;
+}
