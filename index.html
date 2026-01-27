@@ -9,13 +9,14 @@
             <p>Project</p>
             <input id="proj_name" list="proj_names" />
             <datalist id="proj_names"></datalist>
+            <button onclick="save()">Save</button>
             <p>Save</p>
             <select id="save_name">
             </select>
-            <button onclick="save()">Save</button>
             <button onclick="load()">Load</button>
             <button onclick="showTutor()">Show tutorial</button>
             <button onclick="exportSVG()">Export SVG</button>
+            <button onclick="exportJSON()">Export JSON</button>
         </nav>
         <div id="tutorial-modal" class="tutorial">
             <div class="setting-container">

@@ -77,7 +77,8 @@ function nodeRemove(node) {
 }
 function nodeAddParent(node) {
     const parent_node = node.pr;
-    const new_node = nodeCreateDefault(parent_node);
+    const new_node = nodeCreateDefault(null);
+    new_node.pr = parent_node;
     node.pr = new_node;
     new_node.ch = [node];
     if (parent_node) {
@@ -585,16 +586,24 @@ function setupUI() {
     UIUpdateSavesOption();
     UIUpdateProjectsOption();
 }
-function exportSVG() {
-    const elem = document.getElementById("main-svg");
-    const svgData = new XMLSerializer().serializeToString(elem);
-    const blob = new Blob([svgData], { type: "image/svg+xml" });
+function downloadData(name, blob) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
     link.download = "mindmap_" + new Date().toLocaleString();
     link.click();
     URL.revokeObjectURL(url);
+}
+function exportSVG() {
+    const elem = document.getElementById("main-svg");
+    const svgData = new XMLSerializer().serializeToString(elem);
+    const blob = new Blob([svgData], { type: "image/svg+xml" });
+    downloadData("mindmap_" + new Date().toLocaleString(), blob);
+}
+function exportJSON() {
+    const json_data = toJson();
+    const blob = new Blob([json_data], { type: "application/json" });
+    downloadData("mindmap_" + new Date().toLocaleString(), blob);
 }
 main();
 //# sourceMappingURL=index.js.map
