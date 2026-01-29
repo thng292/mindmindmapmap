@@ -153,7 +153,7 @@ function render() {
 function toEditMode(current_node) {
     app_state.mode = 'edit';
     render();
-    // setTimeout(() => current_node.elem.scrollIntoView({ "behavior": "smooth" }), 0)
+    setTimeout(() => scrollIntoView(current_node), 0);
     const box = current_node.elem.getBoundingClientRect();
     const tmp = document.getElementById("node-text-arena");
     tmp.style.display = "block";
@@ -176,7 +176,7 @@ function toEditMode(current_node) {
         current_node.changed = true;
         render();
         tmp.style.display = "none";
-        // setTimeout(() => current_node.elem.scrollIntoView({ "behavior": "smooth" }), 0)
+        setTimeout(() => scrollIntoView(current_node), 0);
         tmp.onblur = null;
     };
 }
@@ -289,11 +289,13 @@ function handleControl(e) {
             } }
         };
     }
-    const current_node = app_state.all_nodes[app_state.selected_node_id];
     if (e.key in handleControlHandlers) {
+        const current_node = app_state.all_nodes[app_state.selected_node_id];
         handleControlHandlers[e.key](current_node, e);
         e.preventDefault();
         render();
+        const new_current_node = app_state.all_nodes[app_state.selected_node_id];
+        setTimeout(() => scrollIntoView(new_current_node), 0);
     }
 }
 function main() {
@@ -320,6 +322,7 @@ function main() {
     setupUI();
     window.addEventListener("resize", () => (render()));
     window.addEventListener("keydown", handleControl);
+    load();
     render();
 }
 function calcBranchSizeRecursive(node) {
@@ -374,9 +377,32 @@ function setAppearance(elem /*SVG elem*/, r, stroke, fill) {
 function cssVar(s) {
     return `var(--${s})`;
 }
+const main_section = document.getElementById("main");
+function scrollIntoView(node, center = false) {
+    // Firefox can't do this properly so we have to do it ourself
+    // Source - https://stackoverflow.com/a/57658998
+    // Posted by Nickolay
+    // Retrieved 2026-01-28, License - CC BY-SA 4.0
+    // { block: "top" } behavior:
+    const el = node.elem;
+    if (!el) {
+        return;
+    }
+    let newScrollY = window.pageYOffset + el.getBoundingClientRect().top;
+    let newScrollX = window.pageXOffset + el.getBoundingClientRect().left;
+    // adjust to behave like { block: "center" }
+    if (center) {
+        newScrollY -= document.documentElement.clientHeight / 2;
+        newScrollX -= document.documentElement.clientWidth / 2;
+    }
+    // console.log("Scrolling to: ", newScrollX, newScrollY, node)
+    // main_section.scrollTo({
+    //     top: newScrollY, left: newScrollX, behavior: "smooth",
+    // });
+}
 function focusNode(e) {
     app_state.selected_node_id = Number(e.getAttribute(NODE_ID_ATTR));
-    // target.scrollIntoView({"behavior": "smooth"}) // Result in weird behavior
+    setTimeout(() => scrollIntoView(app_state.all_nodes[app_state.selected_node_id]), 0);
     render();
 }
 let renderNode_font = getCanvasFont();
