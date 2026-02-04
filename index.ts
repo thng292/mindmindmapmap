@@ -211,7 +211,7 @@ function toEditMode(current_node: NNode) {
     app_state.mode = 'edit'
     render()
     setTimeout(() => scrollIntoView(current_node), 0)
-    const box = current_node.elem.getBoundingClientRect()
+    const box = current_node.elem.getElementsByTagName("rect")[0].getBoundingClientRect()
     const tmp = document.getElementById("node-text-arena")
     tmp.style.display = "block"
     tmp.style.top = `${box.top}px`
@@ -481,8 +481,8 @@ function scrollIntoView(node: NNode, center: boolean = false): void {
 
     // adjust to behave like { block: "center" }
     if (center) {
-        newScrollY -= document.documentElement.clientHeight/2;
-        newScrollX -= document.documentElement.clientWidth/2;
+        newScrollY -= document.documentElement.clientHeight / 2;
+        newScrollX -= document.documentElement.clientWidth / 2;
     }
 
     // console.log("Scrolling to: ", newScrollX, newScrollY, node)
@@ -799,7 +799,8 @@ function downloadData(name: string, blob: Blob) {
     link.href = url
     link.download = "mindmap_" + new Date().toLocaleString()
     link.click()
-    URL.revokeObjectURL(url)}
+    URL.revokeObjectURL(url)
+}
 
 function exportSVG() {
     const elem = document.getElementById("main-svg")
@@ -821,7 +822,7 @@ function importJSON() {
         save()
     }
 
-    document.getElementById("import-json-input").click();    
+    document.getElementById("import-json-input").click();
 }
 
 function importJSONFromFile(e: Event) {
@@ -837,7 +838,7 @@ function importJSONFromFile(e: Event) {
         const content = readerEvent.target.result; // this is the content!
 
         const loaded_root = fromJson(content.toString())
-    
+
         if (loaded_root) {
             document.getElementsByTagName("svg")[0].replaceChildren()
             app_state.root_node = loaded_root;

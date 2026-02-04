@@ -154,7 +154,7 @@ function toEditMode(current_node) {
     app_state.mode = 'edit';
     render();
     setTimeout(() => scrollIntoView(current_node), 0);
-    const box = current_node.elem.getBoundingClientRect();
+    const box = current_node.elem.getElementsByTagName("rect")[0].getBoundingClientRect();
     const tmp = document.getElementById("node-text-arena");
     tmp.style.display = "block";
     tmp.style.top = `${box.top}px`;
