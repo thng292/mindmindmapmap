@@ -849,4 +849,26 @@ function importJSONFromFile(e: Event) {
 
 }
 
+function _exportMarkdown(node: NNode, heading_depth: number, current_depth: number): string {
+    // current_depth start with 1
+    let res = "";
+    if (current_depth > heading_depth) {
+        const padding = "  ".repeat(current_depth - heading_depth - 1);
+        res += padding + `- ${node.co}\n`;
+    }
+    else {
+        res += "\n" + "#".repeat(current_depth) + ` ${node.co}\n`;
+    }
+    for (const child of node.ch) {
+        res += _exportMarkdown(child, heading_depth, current_depth + 1);
+    }
+
+    return res;
+}
+
+function exportMarkdown(node: NNode, heading_depth: number): string {
+    // example: exportMarkdown(app_state.root_node)
+    return _exportMarkdown(node, heading_depth, 1).trim() + "\n"
+}
+
 main();

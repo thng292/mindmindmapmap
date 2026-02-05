@@ -678,5 +678,22 @@ function importJSONFromFile(e) {
         }
     };
 }
+const depth = 4;
+function exportMarkdown(node, current_depth) {
+    // current_depth start with 1
+    let res = "";
+    if (current_depth > depth) {
+        const padding = "  ".repeat(current_depth - depth);
+        res += padding + `- ${node.co}`;
+    }
+    else {
+        res += "#".repeat(current_depth) + ` ${node.co}\n`;
+    }
+    for (const child of node.ch) {
+        res += exportMarkdown(child, current_depth + 1);
+    }
+    res += "\n";
+    return res;
+}
 main();
 //# sourceMappingURL=index.js.map
