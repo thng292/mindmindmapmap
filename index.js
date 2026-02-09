@@ -496,7 +496,6 @@ function serializeNode(node) {
         co: node.co,
         bc: node.bc,
         tc: node.tc,
-        ch: node.ch.map((v) => v.id),
     };
 }
 function toJson() {
@@ -678,22 +677,24 @@ function importJSONFromFile(e) {
         }
     };
 }
-const depth = 4;
-function exportMarkdown(node, current_depth) {
+function _exportMarkdown(node, heading_depth, current_depth) {
     // current_depth start with 1
     let res = "";
-    if (current_depth > depth) {
-        const padding = "  ".repeat(current_depth - depth);
-        res += padding + `- ${node.co}`;
+    if (current_depth > heading_depth) {
+        const padding = "  ".repeat(current_depth - heading_depth - 1);
+        res += padding + `- ${node.co}\n`;
     }
     else {
-        res += "#".repeat(current_depth) + ` ${node.co}\n`;
+        res += "\n" + "#".repeat(current_depth) + ` ${node.co}\n`;
     }
     for (const child of node.ch) {
-        res += exportMarkdown(child, current_depth + 1);
+        res += _exportMarkdown(child, heading_depth, current_depth + 1);
     }
-    res += "\n";
     return res;
+}
+function exportMarkdown(node, heading_depth) {
+    // example: exportMarkdown(app_state.root_node)
+    return _exportMarkdown(node, heading_depth, 1).trim() + "\n";
 }
 main();
 //# sourceMappingURL=index.js.map

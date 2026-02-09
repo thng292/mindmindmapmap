@@ -613,7 +613,6 @@ type SerializedNode = {
     co: string;
     bc?: string;
     tc?: string;
-    ch: number[];
 };
 
 function serializeNode(node: NNode): SerializedNode {
@@ -623,7 +622,6 @@ function serializeNode(node: NNode): SerializedNode {
         co: node.co,
         bc: node.bc,
         tc: node.tc,
-        ch: node.ch.map((v) => v.id),
     };
 }
 
